@@ -1,0 +1,6 @@
+package main
+
+const (
+	COMMAND_NEWMONITOR = "NEWMONITOR"
+	COMMAND_RUNMONITOR = "RUNMONITOR"
+)
