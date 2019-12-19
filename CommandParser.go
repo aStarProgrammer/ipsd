@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -45,11 +44,11 @@ func (cpp *CommandParser) ParseCommand() bool {
 	switch cpp.CurrentCommand {
 	case COMMAND_NEWMONITOR:
 		if cpp.SiteFolderPath == "" {
-			fmt.Fprintln(os.Stderr, "Site Folder is empty")
+			fmt.Println("Site Folder is empty")
 			return false
 		}
 		if cpp.SiteTitle == "" {
-			fmt.Fprintln(os.Stderr, "SiteTitle is empty, cannot create site ")
+			fmt.Println("SiteTitle is empty, cannot create site ")
 			ret = false
 		}
 

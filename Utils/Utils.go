@@ -6,9 +6,9 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -203,7 +203,7 @@ func MakeSoftLink4Folder(srcFolder, linkFolder string) (bool, error) {
 
 	if !srcExist {
 		var errMsg = "Make Soft Link 4 Folder: SrcFolder Not Exist " + srcFolder
-		fmt.Println(errMsg)
+		Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -211,14 +211,14 @@ func MakeSoftLink4Folder(srcFolder, linkFolder string) (bool, error) {
 
 	if targetExist {
 		var errMsg = "Make Soft Link 4 Folder:linkFolder Already Exist " + linkFolder
-		fmt.Println(errMsg)
+		Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
 	errLink := os.Symlink(srcFolder, linkFolder)
 
 	if errLink != nil {
-		fmt.Println("MakeSoftLink: " + errLink.Error())
+		Logger.Println("MakeSoftLink: " + errLink.Error())
 		return false, errLink
 	}
 	return true, nil
@@ -281,7 +281,7 @@ func CreateFile(filePath string) bool {
 	}
 	file2, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0766)
 	if err != nil {
-		fmt.Println(err.Error())
+		Logger.Println(err.Error())
 		return false
 	}
 	file2.Close()
@@ -361,7 +361,7 @@ func ImageTooBig(titleImagePath string) (bool, error) {
 
 	if errFileInfoTitleImage != nil {
 		var errMsg = "Utils.ImageTooBig: Cannot get file size of titleImage"
-		fmt.Println(errMsg)
+		Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -372,4 +372,15 @@ func ImageTooBig(titleImagePath string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+var Logger *log.Logger
+
+func InitLogger() {
+	file, err := os.Create("ipsd.log")
+	if err != nil {
+		log.Fatalln("fail to create test.log file!")
+	}
+
+	Logger = log.New(file, "", log.Llongfile)
 }

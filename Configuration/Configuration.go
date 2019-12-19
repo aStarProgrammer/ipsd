@@ -1,10 +1,10 @@
 package Configuration
 
 import (
-	"ipsc/Page"
-	"ipsc/Utils"
 	"errors"
 	"io/ioutil"
+	"ipsc/Page"
+	"ipsc/Utils"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -17,6 +17,7 @@ func GetCssFilePath() (string, error) {
 	resourceFolderPath, errPath := GetResourcesFolderPath()
 
 	if errPath != nil {
+		Utils.Logger.Println("Cannot get resources folder path")
 		return "", errors.New("Cannot get resources folder path")
 	}
 

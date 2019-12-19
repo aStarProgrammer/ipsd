@@ -3,7 +3,6 @@ package Monitor
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"ipsd/Utils"
 	"os"
@@ -148,7 +147,7 @@ func (smp *SiteMonitor) SaveToFile(filePath string) (bool, error) {
 func (smp *SiteMonitor) AddMarkdown_Args(filePath, ID, lastModified string) (bool, error) {
 	if smp.GetMarkdown(filePath) != -1 {
 		var errMsg = "SiteMonitor.AddMarkdown_Args: Markdown already added"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -165,7 +164,7 @@ func (smp *SiteMonitor) AddMarkdown_Args(filePath, ID, lastModified string) (boo
 func (smp *SiteMonitor) AddMarkdown(mdPage MarkdownPage) (bool, error) {
 	if smp.GetMarkdown(mdPage.FilePath) != -1 {
 		var errMsg = "SiteMonitor.AddMarkdown: Markdown already added"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -195,7 +194,7 @@ func (smp *SiteMonitor) UpdateMarkdown_Args(filePath, ID, lastModified string) (
 
 	if index == -1 {
 		var errMsg = "SiteMonitor.UpdateMarkdown_Args: Cannot find markdown with file path " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 	smp.MarkdownFiles[index].FilePath = filePath
@@ -209,7 +208,7 @@ func (smp *SiteMonitor) UpdateMarkdown(mdPage MarkdownPage) (bool, error) {
 
 	if index == -1 {
 		var errMsg = "SiteMonitor.UpdateMarkdown: Cannot find markdown with file path " + mdPage.FilePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 	smp.MarkdownFiles[index].FilePath = mdPage.FilePath
@@ -222,7 +221,7 @@ func (smp *SiteMonitor) DeleteMarkdown(filePath string) (bool, error) {
 	var index = smp.GetMarkdown(filePath)
 	if index == -1 {
 		var errMsg = "SiteMonitor.DeleteMarkdown: Cannot find markdown with file path " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -233,7 +232,7 @@ func (smp *SiteMonitor) DeleteMarkdown(filePath string) (bool, error) {
 func (smp *SiteMonitor) AddHtml_Args(filePath, ID, lastModified string) (bool, error) {
 	if smp.GetHtml(filePath) != -1 {
 		var errMsg = "SiteMonitor.AddHtml_Args: Html already added"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -250,7 +249,7 @@ func (smp *SiteMonitor) AddHtml_Args(filePath, ID, lastModified string) (bool, e
 func (smp *SiteMonitor) AddHtml(htmPage HtmlPage) (bool, error) {
 	if smp.GetHtml(htmPage.FilePath) != -1 {
 		var errMsg = "SiteMonitor.AddHtml: Html already added"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -280,7 +279,7 @@ func (smp *SiteMonitor) UpdateHtml_Args(filePath, ID, lastModified string) (bool
 
 	if index == -1 {
 		var errMsg = "SiteMonitor.UpdateHtml_Args: Cannot find html with file path " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -296,7 +295,7 @@ func (smp *SiteMonitor) UpdateHtml(htmPage HtmlPage) (bool, error) {
 
 	if index == -1 {
 		var errMsg = "SiteMonitor.UpdateHtml: Cannot find html with file path " + htmPage.FilePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -311,7 +310,7 @@ func (smp *SiteMonitor) DeleteHtml(filePath string) (bool, error) {
 	var index = smp.GetHtml(filePath)
 	if index == -1 {
 		var errMsg = "SiteMonitor.DeleteHtml: Cannot find html with file path " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -322,7 +321,7 @@ func (smp *SiteMonitor) DeleteHtml(filePath string) (bool, error) {
 func (smp *SiteMonitor) AddLink_Args(linkUrl, ID, linkTitle string, isTop bool) (bool, error) {
 	if smp.GetLink(linkUrl) != -1 {
 		var errMsg = "SiteMonitor.AddLink_Args: Link already added"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -340,7 +339,7 @@ func (smp *SiteMonitor) AddLink_Args(linkUrl, ID, linkTitle string, isTop bool) 
 func (smp *SiteMonitor) AddLink(linkPage LinkPage) (bool, error) {
 	if smp.GetLink(linkPage.Url) != -1 {
 		var errMsg = "SiteMonitor.AddLink: Link already added"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -370,7 +369,7 @@ func (smp *SiteMonitor) UpdateLink_Args(linkUrl, ID, linkTitle string, isTop boo
 
 	if index == -1 {
 		var errMsg = "SiteMonitor.UpdateLink_Args: Cannot find link with url " + linkUrl
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -387,7 +386,7 @@ func (smp *SiteMonitor) UpdateLink(linkPage LinkPage) (bool, error) {
 
 	if index == -1 {
 		var errMsg = "SiteMonitor.UpdateLink: Cannot find link with url " + linkPage.Url
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -402,7 +401,7 @@ func (smp *SiteMonitor) DeleteLink(linkUrl string) (bool, error) {
 	var index = smp.GetLink(linkUrl)
 	if index == -1 {
 		var errMsg = "SiteMonitor.DeleteLink: Cannot find link with url " + linkUrl
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 

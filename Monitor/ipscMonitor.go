@@ -30,7 +30,7 @@ func RunIPSCCommand(ipscCmd *exec.Cmd) (string, error) {
 
 	errIPSCCmd := ipscCmd.Run()
 	if errIPSCCmd != nil {
-		fmt.Println(fmt.Sprint(errIPSCCmd) + " : " + stderr.String())
+		Utils.Logger.Println(fmt.Sprint(errIPSCCmd) + " : " + stderr.String())
 		return "", errIPSCCmd
 	}
 	return string(stdoutput.String()), nil
@@ -41,13 +41,13 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_ExportSite: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return nil, nil, nil, false, errors.New(errMsg)
 	}
 
 	if Utils.PathIsExist(exportFolder) == false {
 		var errMsg = "Monitor/IPSC_ExportSite: exportFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return nil, nil, nil, false, errors.New(errMsg)
 	}
 
@@ -65,7 +65,7 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 	ipscOutput, errRunCmd := RunIPSCCommand(exportCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return nil, nil, nil, false, errRunCmd
 	}
 
@@ -85,7 +85,7 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 				Link:0`
 				*/
 				var errMsg = "Monitor/IPSC_ExportSite: Export data error"
-				fmt.Println(errMsg)
+				Utils.Logger.Println(errMsg)
 				return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 			}
 
@@ -95,14 +95,14 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 			allCount, errAllCount := strconv.Atoi(strings.Split(sAllCount, ":")[1])
 			if errAllCount != nil {
 				var errMsg = "Monitor/IPSC_ExportSite: Cannot get allCount"
-				fmt.Println(errMsg)
+				Utils.Logger.Println(errMsg)
 				return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 			}
 
 			markdownCount, errMarkdownCount := strconv.Atoi(strings.Split(sMarkdownCount, ":")[1])
 			if errMarkdownCount != nil {
 				var errMsg = "Monitor/IPSC_ExportSite: Cannot get MarkdownCount"
-				fmt.Println(errMsg)
+				Utils.Logger.Println(errMsg)
 				return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 			}
 
@@ -110,7 +110,7 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 			htmlCount, errHtmlCount := strconv.Atoi(strings.Split(sHtmlCount, ":")[1])
 			if errHtmlCount != nil {
 				var errMsg = "Monitor/IPSC_ExportSite: Cannot get HtmlCount"
-				fmt.Println(errMsg)
+				Utils.Logger.Println(errMsg)
 				return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 			}
 
@@ -118,13 +118,13 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 			linkCount, errLinkCount := strconv.Atoi(strings.Split(sLinkCount, ":")[1])
 			if errLinkCount != nil {
 				var errMsg = "Monitor/IPSC_ExportSite: Cannot get LinkCount"
-				fmt.Println(errMsg)
+				Utils.Logger.Println(errMsg)
 				return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 			}
 
 			if allCount != markdownCount+htmlCount+linkCount {
 				var errMsg = "Monitor/IPSC_ExportSite: allCount != markdownCount+htmlCount+linkCount"
-				fmt.Println(errMsg)
+				Utils.Logger.Println(errMsg)
 				return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 			}
 
@@ -133,7 +133,7 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 				var markdownDatas = strings.Split(sMarkdownData, "|")
 				if len(markdownDatas) != 3 {
 					var errMsg = "Monitor/IPSC_ExportSite: Retrive Markdown Data failed " + sMarkdownCount
-					fmt.Println(errMsg)
+					Utils.Logger.Println(errMsg)
 					return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 				}
 
@@ -151,7 +151,7 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 				var htmlDatas = strings.Split(sHtmlData, "|")
 				if len(htmlDatas) != 3 {
 					var errMsg = "Monitor/IPSC_ExportSite: Retrive Html Data failed " + sHtmlData
-					fmt.Println(errMsg)
+					Utils.Logger.Println(errMsg)
 					return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 				}
 
@@ -168,7 +168,7 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 				var linkDatas = strings.Split(sLinkData, "|")
 				if len(linkDatas) != 4 {
 					var errMsg = "Monitor/IPSC_ExportSite: Retrive Link Data failed " + sLinkData
-					fmt.Println(errMsg)
+					Utils.Logger.Println(errMsg)
 					return markdownPages, htmlPages, linkPages, false, errors.New(errMsg)
 				}
 
@@ -196,7 +196,7 @@ func IPSC_ExportSite(siteFolder, siteTitle, exportFolder string) ([]MarkdownPage
 func IPSC_AddMarkdown(siteFolder, siteTitle, pagePath, pageTitle, pageAuthor, titleImage string, isTop bool) (string, bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_AddMarkdown: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return "", false, errors.New(errMsg)
 	}
 
@@ -228,7 +228,7 @@ func IPSC_AddMarkdown(siteFolder, siteTitle, pagePath, pageTitle, pageAuthor, ti
 	ipscOutput, errRunCmd := RunIPSCCommand(addCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return "", false, errRunCmd
 	}
 
@@ -252,7 +252,7 @@ func IPSC_AddMarkdown(siteFolder, siteTitle, pagePath, pageTitle, pageAuthor, ti
 func IPSC_AddHtml(siteFolder, siteTitle, pagePath, pageTitle, pageAuthor, titleImage string, isTop bool) (string, bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_AddHtml: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return "", false, errors.New(errMsg)
 	}
 
@@ -284,7 +284,7 @@ func IPSC_AddHtml(siteFolder, siteTitle, pagePath, pageTitle, pageAuthor, titleI
 	ipscOutput, errRunCmd := RunIPSCCommand(addCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return "", false, errRunCmd
 	}
 
@@ -307,7 +307,7 @@ func IPSC_AddHtml(siteFolder, siteTitle, pagePath, pageTitle, pageAuthor, titleI
 func IPSC_AddLink(siteFolder, siteTitle, linkUrl, pageTitle, pageAuthor, titleImage string, isTop bool) (string, bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_AddLink: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return "", false, errors.New(errMsg)
 	}
 
@@ -339,7 +339,7 @@ func IPSC_AddLink(siteFolder, siteTitle, linkUrl, pageTitle, pageAuthor, titleIm
 	ipscOutput, errRunCmd := RunIPSCCommand(addCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return "", false, errRunCmd
 	}
 
@@ -362,7 +362,7 @@ func IPSC_AddLink(siteFolder, siteTitle, linkUrl, pageTitle, pageAuthor, titleIm
 func IPSC_UpdateMarkdownOrHtml(siteFolder, siteTitle, pageID, pagePath, pageTitle, pageAuthor, titleImage string, isTop bool) (bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_UpdateMarkdownOrHtml: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -394,7 +394,7 @@ func IPSC_UpdateMarkdownOrHtml(siteFolder, siteTitle, pageID, pagePath, pageTitl
 	ipscOutput, errRunCmd := RunIPSCCommand(updateCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return false, errRunCmd
 	}
 
@@ -412,7 +412,7 @@ func IPSC_UpdateMarkdownOrHtml(siteFolder, siteTitle, pageID, pagePath, pageTitl
 func IPSC_UpdateLink(siteFolder, siteTitle, pageID, linkUrl, pageTitle, pageAuthor, titleImage string, isTop bool) (bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_UpdateLink: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -444,7 +444,7 @@ func IPSC_UpdateLink(siteFolder, siteTitle, pageID, linkUrl, pageTitle, pageAuth
 	ipscOutput, errRunCmd := RunIPSCCommand(updateCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return false, errRunCmd
 	}
 
@@ -463,7 +463,7 @@ func IPSC_UpdateLink(siteFolder, siteTitle, pageID, linkUrl, pageTitle, pageAuth
 func IPSC_DeletePage(siteFolder, siteTitle, pageID string) (bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_DeletePage: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -482,7 +482,7 @@ func IPSC_DeletePage(siteFolder, siteTitle, pageID string) (bool, error) {
 	ipscOutput, errRunCmd := RunIPSCCommand(deleteCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return false, errRunCmd
 	}
 
@@ -501,7 +501,7 @@ func IPSC_DeletePage(siteFolder, siteTitle, pageID string) (bool, error) {
 func IPSC_CreateMarkdown(siteFolder, siteTitle, pagePath, markdownType string) (bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_CreateMarkdown: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -520,7 +520,7 @@ func IPSC_CreateMarkdown(siteFolder, siteTitle, pagePath, markdownType string) (
 	ipscOutput, errRunCmd := RunIPSCCommand(createMdCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return false, errRunCmd
 	}
 
@@ -539,7 +539,7 @@ func IPSC_CreateMarkdown(siteFolder, siteTitle, pagePath, markdownType string) (
 func IPSC_Compile(siteFolder, siteTitle, indexPageSize string) (bool, error) {
 	if Utils.PathIsExist(siteFolder) == false {
 		var errMsg = "Monitor/IPSC_Compile: siteFolder is empty"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return false, errors.New(errMsg)
 	}
 
@@ -556,7 +556,7 @@ func IPSC_Compile(siteFolder, siteTitle, indexPageSize string) (bool, error) {
 	ipscOutput, errRunCmd := RunIPSCCommand(compileCmd)
 
 	if errRunCmd != nil {
-		fmt.Println(errRunCmd.Error())
+		Utils.Logger.Println(errRunCmd.Error())
 		return false, errRunCmd
 	}
 

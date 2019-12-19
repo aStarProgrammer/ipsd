@@ -3,7 +3,6 @@ package Monitor
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"ipsd/Utils"
 	"strconv"
@@ -39,7 +38,7 @@ func ReadLinksFromFile(filePath string) ([]LinkPage, error) {
 	if errReadFile != nil {
 		var errMsg string
 		errMsg = "ReadLinksFromFile: : Cannot read Markdown file " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 
 		return nil, errors.New(errMsg)
 	}
@@ -47,7 +46,7 @@ func ReadLinksFromFile(filePath string) ([]LinkPage, error) {
 	var strLinks []string
 	errUnmarshal := json.Unmarshal(bFileContent, &strLinks)
 	if errUnmarshal != nil {
-		fmt.Println(errUnmarshal.Error())
+		Utils.Logger.Println(errUnmarshal.Error())
 		return nil, errUnmarshal
 	}
 
@@ -57,7 +56,7 @@ func ReadLinksFromFile(filePath string) ([]LinkPage, error) {
 		if len(strVariables) != 4 {
 			var errMsg string
 			errMsg = "ReadLinksFromFile: : Cannot get Link Information from  " + sLink
-			fmt.Println(errMsg)
+			Utils.Logger.Println(errMsg)
 
 			return nil, errors.New(errMsg)
 		}

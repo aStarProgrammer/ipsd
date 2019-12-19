@@ -15,7 +15,7 @@ const (
 func ReadMarkdownPageProperties(filePath string) (*MarkdownProperties, bool, error) {
 	if Utils.PathIsExist(filePath) == false {
 		var errMsg = "Monitor.ReadMarkdownPageProperties: Markdown File not exist " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return nil, false, errors.New(errMsg)
 	}
 
@@ -24,7 +24,7 @@ func ReadMarkdownPageProperties(filePath string) (*MarkdownProperties, bool, err
 	if errReadFile != nil {
 		var errMsg string
 		errMsg = "Monitor.ReadMarkdownPageProperties: Cannot read Markdown file " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 
 		return nil, false, errors.New(errMsg)
 	}
@@ -57,7 +57,7 @@ func ReadMarkdownPageProperties(filePath string) (*MarkdownProperties, bool, err
 	if len(values) != 4 {
 		var errMsg string
 		errMsg = "Monitor.ReadMarkdownPageProperties: Cannot read metadata properties of Markdown file " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 
 		return nil, false, errors.New(errMsg)
 	}

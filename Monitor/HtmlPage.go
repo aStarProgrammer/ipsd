@@ -2,7 +2,6 @@ package Monitor
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"ipsd/Utils"
 	"strings"
@@ -17,7 +16,7 @@ type HtmlPage struct {
 func ReadHtmlProperties(filePath string) (*HtmlProperties, bool, error) {
 	if Utils.PathIsExist(filePath) == false {
 		var errMsg = "Monitor.ReadHtmlPageProperties: Html File not exist " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return nil, false, errors.New(errMsg)
 	}
 
@@ -26,7 +25,7 @@ func ReadHtmlProperties(filePath string) (*HtmlProperties, bool, error) {
 	if errReadFile != nil {
 		var errMsg string
 		errMsg = "Monitor.ReadHtmlPageProperties: Cannot read Html file " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 
 		return nil, false, errors.New(errMsg)
 	}
@@ -35,7 +34,7 @@ func ReadHtmlProperties(filePath string) (*HtmlProperties, bool, error) {
 
 	if strings.HasPrefix(fileContent, "<!--") == false || strings.Contains(fileContent, "[//]: #") == false {
 		var errMsg = "You should edit html file before add it to the folder, for more information, read the ReadMe"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return nil, false, errors.New(errMsg)
 	}
 
@@ -56,7 +55,7 @@ func ReadHtmlProperties(filePath string) (*HtmlProperties, bool, error) {
 	if len(values) != 4 {
 		var errMsg string
 		errMsg = "Monitor.ReadHtmlPageProperties: Cannot read metadata properties of Html file " + filePath
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 
 		return nil, false, errors.New(errMsg)
 	}

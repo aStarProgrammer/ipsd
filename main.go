@@ -17,7 +17,7 @@ import (
 func Try2FindSpFile(siteFolderPath string) (string, error) {
 	if Utils.PathIsExist(siteFolderPath) == false {
 		var errMsg = "Try2FindSpFile: Site Folder not exist"
-		fmt.Println(errMsg)
+		Utils.Logger.Println(errMsg)
 		return "", errors.New(errMsg)
 	}
 
@@ -33,7 +33,7 @@ func Try2FindSpFile(siteFolderPath string) (string, error) {
 			spCount++
 			if spCount > 1 {
 				var errMsg = "Try2FindSpFile: More than 1 .sp file"
-				fmt.Println(errMsg)
+				Utils.Logger.Println(errMsg)
 				return "", errors.New(errMsg)
 			}
 		}
@@ -215,7 +215,7 @@ func MonitorSite(monitorFolderPath, indexPageSize string, monitorInterval int64)
 		for range ticker.C {
 			_, errMonitor := RunMonitor(monitorFolderPath, indexPageSize)
 			if errMonitor != nil {
-				fmt.Println(errMonitor.Error())
+				Utils.Logger.Println(errMonitor.Error())
 			}
 		}
 		ch <- 1
@@ -308,29 +308,29 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 					if errReadProperteis != nil {
 						var errMsg = "RunMonitor: Cannot read Markdown properties"
-						fmt.Println(errMsg)
+						Utils.Logger.Println(errMsg)
 						return false, errReadProperteis
 					}
 
 					titleImagePath, errImageName := Utils.GetImageWithSameName(fPath)
 
 					if errImageName != nil {
-						fmt.Println("No Title Image with same name of " + fPath + " found")
-						fmt.Println("Title Image of " + fPath + " will be empty")
+						Utils.Logger.Println("No Title Image with same name of " + fPath + " found")
+						Utils.Logger.Println("Title Image of " + fPath + " will be empty")
 					}
 
 					//Check Title Image Size, should smaller than 30KB
 					bImageSize, errImageSize := Utils.ImageTooBig(titleImagePath)
 
 					if errImageSize != nil {
-						fmt.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
-						fmt.Println(titleImagePath)
+						Utils.Logger.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
+						Utils.Logger.Println(titleImagePath)
 						return false, errors.New("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
 					}
 
 					if bImageSize == true {
 						var errMsg = "RunMonitor: TitleImage " + titleImagePath + " is bigger than 30KB, please edit it firstly to make it smaller than 30KB, then add again"
-						fmt.Println(errMsg)
+						Utils.Logger.Println(errMsg)
 						return false, errors.New(errMsg)
 					}
 
@@ -338,8 +338,8 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 					if errAdd != nil || bAdd == false {
 						var errMsg = "RunMonitor: Cannot Add Markdown file " + fPath
-						fmt.Println(errMsg)
-						fmt.Println(errAdd.Error())
+						Utils.Logger.Println(errMsg)
+						Utils.Logger.Println(errAdd.Error())
 						return false, errors.New(errMsg)
 					}
 
@@ -363,35 +363,35 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 						if errReadProperteis != nil {
 							var errMsg = "RunMonitor: Cannot read Markdown properties"
-							fmt.Println(errMsg)
+							Utils.Logger.Println(errMsg)
 							return false, errReadProperteis
 						}
 
 						titleImagePath, errImageName := Utils.GetImageWithSameName(fPath)
 
 						if errImageName != nil {
-							fmt.Println("No Title Image with same name of " + fPath + " found")
-							fmt.Println("Title Image of " + fPath + " will be empty")
+							Utils.Logger.Println("No Title Image with same name of " + fPath + " found")
+							Utils.Logger.Println("Title Image of " + fPath + " will be empty")
 						}
 						//Check Title Image Size, should smaller than 30KB
 						bImageSize, errImageSize := Utils.ImageTooBig(titleImagePath)
 
 						if errImageSize != nil {
-							fmt.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
-							fmt.Println(titleImagePath)
+							Utils.Logger.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
+							Utils.Logger.Println(titleImagePath)
 							return false, errors.New("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
 						}
 
 						if bImageSize == true {
 							var errMsg = "RunMonitor: TitleImage " + titleImagePath + " is bigger than 30KB, please edit it firstly to make it smaller than 30KB, then add again"
-							fmt.Println(errMsg)
+							Utils.Logger.Println(errMsg)
 							return false, errors.New(errMsg)
 						}
 						_, errUpdate := Monitor.IPSC_UpdateMarkdownOrHtml(smp.SiteFolderPath, smp.SiteTitle, sourceMarkdown.ID, fPath, mdProperties.Title, mdProperties.Author, titleImagePath, mdProperties.IsTop)
 
 						if errUpdate != nil {
 							var errMsg = "RunMonitor: Cannot Update Markdown file " + fPath
-							fmt.Println(errMsg)
+							Utils.Logger.Println(errMsg)
 							return false, errors.New(errMsg)
 						}
 
@@ -413,7 +413,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 				if errDelete != nil {
 					var errMsg = "RunMonitor: Cannot Delete file " + sourceMd.FilePath
-					fmt.Println(errMsg)
+					Utils.Logger.Println(errMsg)
 				}
 
 				imagePath, errImagePath := Utils.GetImageWithSameName(sourceMd.FilePath)
@@ -422,7 +422,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 					bDeleteImage := Utils.DeleteFile(imagePath)
 					if bDeleteImage == false {
 						var errMsg = "RunMonitor: Cannot Delete Image " + imagePath
-						fmt.Println(errMsg)
+						Utils.Logger.Println(errMsg)
 					}
 				}
 
@@ -474,28 +474,28 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 					if errReadProperteis != nil {
 						var errMsg = "RunMonitor: Cannot read Html properties"
-						fmt.Println(errMsg)
+						Utils.Logger.Println(errMsg)
 						return false, errReadProperteis
 					}
 
 					titleImagePath, errImageName := Utils.GetImageWithSameName(fPath)
 
 					if errImageName != nil {
-						fmt.Println("No Title Image with same name of " + fPath + " found")
-						fmt.Println("Title Image of " + fPath + " will be empty")
+						Utils.Logger.Println("No Title Image with same name of " + fPath + " found")
+						Utils.Logger.Println("Title Image of " + fPath + " will be empty")
 					}
 					//Check Title Image Size, should smaller than 30KB
 					bImageSize, errImageSize := Utils.ImageTooBig(titleImagePath)
 
 					if errImageSize != nil {
-						fmt.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
-						fmt.Println(titleImagePath)
+						Utils.Logger.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
+						Utils.Logger.Println(titleImagePath)
 						return false, errors.New("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
 					}
 
 					if bImageSize == true {
 						var errMsg = "RunMonitor: TitleImage " + titleImagePath + " is bigger than 30KB, please edit it firstly to make it smaller than 30KB, then add again"
-						fmt.Println(errMsg)
+						Utils.Logger.Println(errMsg)
 						return false, errors.New(errMsg)
 					}
 
@@ -503,8 +503,8 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 					if errAdd != nil {
 						var errMsg = "RunMonitor: Cannot Add Html file " + fPath
-						fmt.Println(errMsg)
-						fmt.Println(errAdd.Error())
+						Utils.Logger.Println(errMsg)
+						Utils.Logger.Println(errAdd.Error())
 						return false, errors.New(errMsg)
 					}
 
@@ -527,35 +527,35 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 						if errReadProperteis != nil {
 							var errMsg = "RunMonitor: Cannot read Html properties"
-							fmt.Println(errMsg)
+							Utils.Logger.Println(errMsg)
 							return false, errReadProperteis
 						}
 
 						titleImagePath, errImageName := Utils.GetImageWithSameName(fPath)
 
 						if errImageName != nil {
-							fmt.Println("No Title Image with same name of " + fPath + " found")
-							fmt.Println("Title Image of " + fPath + " will be empty")
+							Utils.Logger.Println("No Title Image with same name of " + fPath + " found")
+							Utils.Logger.Println("Title Image of " + fPath + " will be empty")
 						}
 						//Check Title Image Size, should smaller than 30KB
 						bImageSize, errImageSize := Utils.ImageTooBig(titleImagePath)
 
 						if errImageSize != nil {
-							fmt.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
-							fmt.Println(titleImagePath)
+							Utils.Logger.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
+							Utils.Logger.Println(titleImagePath)
 							return false, errors.New("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
 						}
 
 						if bImageSize == true {
 							var errMsg = "RunMonitor: TitleImage " + titleImagePath + " is bigger than 30KB, please edit it firstly to make it smaller than 30KB, then add again"
-							fmt.Println(errMsg)
+							Utils.Logger.Println(errMsg)
 							return false, errors.New(errMsg)
 						}
 						_, errUpdate := Monitor.IPSC_UpdateMarkdownOrHtml(smp.SiteFolderPath, smp.SiteTitle, sourceHtml.ID, fPath, htmProperties.Title, htmProperties.Author, titleImagePath, htmProperties.IsTop)
 
 						if errUpdate != nil {
 							var errMsg = "RunMonitor: Cannot Update Html file " + fPath
-							fmt.Println(errMsg)
+							Utils.Logger.Println(errMsg)
 							return false, errors.New(errMsg)
 						}
 
@@ -576,7 +576,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 				if errDelete != nil {
 					var errMsg = "RunMonitor: Cannot Delete file " + sourceHtml.FilePath
-					fmt.Println(errMsg)
+					Utils.Logger.Println(errMsg)
 				}
 
 				imagePath, errImagePath := Utils.GetImageWithSameName(sourceHtml.FilePath)
@@ -585,7 +585,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 					bDeleteImage := Utils.DeleteFile(imagePath)
 					if bDeleteImage == false {
 						var errMsg = "RunMonitor: Cannot Delete Image " + imagePath
-						fmt.Println(errMsg)
+						Utils.Logger.Println(errMsg)
 					}
 				}
 
@@ -623,7 +623,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 				fLinks, errReadLinks := Monitor.ReadLinksFromFile(linkFilePath)
 				if errReadLinks != nil {
 					var errMsg = "RunMonitor: Cannot read Links from " + linkFilePath
-					fmt.Println(errMsg)
+					Utils.Logger.Println(errMsg)
 				} else {
 					for _, fLink := range fLinks {
 						index := smp.GetLink(fLink.Url)
@@ -635,28 +635,28 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 							titleImagePath, errImageName := Utils.GetImageWithSameTitle(linkFolderPath, fLink.Title)
 
 							if errImageName != nil {
-								fmt.Println("No Title Image with same name of " + fLink.Url + " found")
-								fmt.Println("Title Image of " + fLink.Url + " will be empty")
+								Utils.Logger.Println("No Title Image with same name of " + fLink.Url + " found")
+								Utils.Logger.Println("Title Image of " + fLink.Url + " will be empty")
 							}
 							//Check Title Image Size, should smaller than 30KB
 							bImageSize, errImageSize := Utils.ImageTooBig(titleImagePath)
 
 							if errImageSize != nil {
-								fmt.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
-								fmt.Println(titleImagePath)
+								Utils.Logger.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
+								Utils.Logger.Println(titleImagePath)
 								return false, errors.New("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
 							}
 
 							if bImageSize == true {
 								var errMsg = "RunMonitor: TitleImage " + titleImagePath + " is bigger than 30KB, please edit it firstly to make it smaller than 30KB, then add again"
-								fmt.Println(errMsg)
+								Utils.Logger.Println(errMsg)
 								return false, errors.New(errMsg)
 							}
 							newID, _, errAddLink := Monitor.IPSC_AddLink(smp.SiteFolderPath, smp.SiteTitle, fLink.Url, fLink.Title, Utils.CurrentUser(), titleImagePath, fLink.IsTop)
 
 							if errAddLink != nil {
 								var errMsg = "RunMonitor: Cannot Add Link file " + fLink.Url
-								fmt.Println(errMsg)
+								Utils.Logger.Println(errMsg)
 								return false, errors.New(errMsg)
 							}
 
@@ -679,22 +679,22 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 								titleImagePath, errImageName := Utils.GetImageWithSameTitle(linkFolderPath, fLink.Title)
 
 								if errImageName != nil {
-									fmt.Println("No Title Image with same name of " + fLink.Url + " found")
-									fmt.Println("Title Image of " + fLink.Url + " will be empty")
+									Utils.Logger.Println("No Title Image with same name of " + fLink.Url + " found")
+									Utils.Logger.Println("Title Image of " + fLink.Url + " will be empty")
 								}
 
 								//Check Title Image Size, should smaller than 30KB
 								bImageSize, errImageSize := Utils.ImageTooBig(titleImagePath)
 
 								if errImageSize != nil {
-									fmt.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
-									fmt.Println(titleImagePath)
+									Utils.Logger.Println("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
+									Utils.Logger.Println(titleImagePath)
 									return false, errors.New("RunMonitor: Cannot check image size, please make sure the image is smaller than 30KB")
 								}
 
 								if bImageSize == true {
 									var errMsg = "RunMonitor: TitleImage " + titleImagePath + " is bigger than 30KB, please edit it firstly to make it smaller than 30KB, then add again"
-									fmt.Println(errMsg)
+									Utils.Logger.Println(errMsg)
 									return false, errors.New(errMsg)
 								}
 
@@ -702,7 +702,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 								if errUpdateLink != nil {
 									var errMsg = "RunMonitor: Cannot Update Link file " + fLink.Url
-									fmt.Println(errMsg)
+									Utils.Logger.Println(errMsg)
 									return false, errors.New(errMsg)
 								}
 
@@ -750,7 +750,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 		if errCompile != nil {
 			var errMsg = "RunMonitor: Update monitor folder Success, but cannot compile " + errCompile.Error()
-			fmt.Println(errMsg)
+			Utils.Logger.Println(errMsg)
 			return false, errCompile
 		}
 
@@ -769,12 +769,13 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 }
 
 func Run() {
+	Utils.InitLogger()
 	var cp CommandParser
 	bParse := cp.ParseCommand()
 	if bParse == true {
 		_, errRet := Dispatch(cp)
 		if errRet != nil {
-			fmt.Println(errRet.Error())
+			Utils.Logger.Println(errRet.Error())
 		}
 	}
 	fmt.Println("Done")
