@@ -384,3 +384,45 @@ func InitLogger() {
 
 	Logger = log.New(file, "", log.Llongfile)
 }
+
+func PathIsFile(filePath string) bool {
+	if filePath == "" {
+		return false
+	}
+
+	if PathIsExist(filePath) == false {
+		return false
+	}
+	f, err := os.Stat(filePath)
+
+	if err != nil {
+		Logger.Println(err.Error())
+		return false
+	}
+
+	if f.IsDir() == false {
+		return true
+	}
+
+	return false
+}
+
+func PathIsDir(filePath string) bool {
+
+	if filePath == "" {
+		return false
+	}
+
+	if PathIsExist(filePath) == false {
+		return false
+	}
+
+	f, err := os.Stat(filePath)
+
+	if err != nil {
+		Logger.Println(err.Error())
+		return false
+	}
+
+	return f.IsDir()
+}

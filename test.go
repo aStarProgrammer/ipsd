@@ -311,6 +311,57 @@ func testRunMonitor() {
 	}
 }
 
+func testAddFile() {
+	var siteFolder, siteTitle, filePath string
+	siteFolder = "F:\\TestSite"
+	siteTitle = "Test Site"
+	filePath = "F:\\MarkdownWorkspace"
+
+	bAdd, errAdd := Monitor.IPSC_AddFile(siteFolder, siteTitle, filePath)
+
+	if errAdd != nil {
+		fmt.Println(errAdd.Error())
+	}
+
+	if errAdd == nil && bAdd {
+		fmt.Println("Success ")
+	}
+}
+
+func testListFile() {
+	var siteFolder, siteTitle string
+	siteFolder = "F:\\TestSite"
+	siteTitle = "Test Site"
+
+	bList, errList := Monitor.IPSC_ListFile(siteFolder, siteTitle)
+
+	if errList != nil {
+		fmt.Println(errList.Error())
+	}
+
+	if errList == nil && bList {
+		fmt.Println("Success ")
+	}
+}
+
+func testDeleteFile() {
+	var siteFolder, siteTitle, filePath string
+	siteFolder = "F:\\TestSite"
+	siteTitle = "Test Site"
+	filePath = ".\\Files\\MarkdownWorkspace\\A1.md"
+
+	bDelete, errDelete := Monitor.IPSC_DeleteFile(siteFolder, siteTitle, filePath)
+
+	if errDelete != nil {
+		fmt.Println(errDelete.Error())
+	}
+
+	if errDelete == nil && bDelete {
+		fmt.Println("Success ")
+	}
+
+}
+
 func test() {
 	testRunMonitor()
 }

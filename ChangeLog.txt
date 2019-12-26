@@ -1,3 +1,8 @@
 0.1.0.1 2019/12/19 
-*Add output of all system error
-*Change error output from console to log file, normal message will output to console
+* Add output of all system error
+* Change error output from console to log file, normal message will output to console
+
+0.2.0.0 2019/12/23
+* Add New Feature, now you can add normal files to Files folder, and all files in this folder will be copied to 
+  Output/Pages/Files folder, and you can add list files by ipsd -ListFiles and use the Relative Url in your 
+  hyperlink when you writing markdown file.

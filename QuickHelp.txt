@@ -1,0 +1,35 @@
+IPSD(InterPlanet Site Watchdog) is a tool working with ipsc, it will monitor a folder and connect this folder with ipsc.
+You can add/remove/update new md,html and link to this folder with their title image and metadata
+And ipsd will detect these changes and update to ipsc, then compile a new site.
+
+*New Monitor 
+	ipsd -Command NewMonitor -SiteFolder -SiteTitle  -MonitorFolder
+
+	Create a new monitor, connect a monitor to a ipsc site project
+	
+	Example:
+		ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
+	
+*Run Monitor
+	ipsd -Command RunMonitor -MonitorFolder -IndexPageSize
+	
+	Run the monitor defined in MonitorFolder , if there are any change in the monitor folder (add delete or update), 
+	will update the changes to ispc and then compile site with IndexPageSize
+	
+	IndexPageSize (for index page and more page of site, for more information, read QuickHelp.txt of FullHelp.txt of ipsc)
+		*Normal 	index(more) page will contain 20 items
+		*Small  	index(more) page will contain 10 items
+		*VerySmall	index(more) page will contain 5  items
+		*Big		index(more) page will contain 30 items
+	
+	Example:
+	ipsd -Command RunMonitor -MonitorFolder "F:\WatchdogSpace" -IndexPageSize "VerySmall"
+
+* List Normal File
+	ipsd -Command ListNormalFile -MonitorFolder 
+	
+	List all the normal files that already added to the connected site project
+	
+	Example:
+	
+	ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"

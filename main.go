@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"ipsd/Configuration"
 	"ipsd/Monitor"
 	"ipsd/Utils"
 	"os"
@@ -79,9 +80,73 @@ func Dispatch(cp CommandParser) (bool, error) {
 		//MonitorSite(cp.MonitorFolderPath, cp.IndexPageSize, cp.MonitorInterval)
 		RunMonitor(cp.MonitorFolderPath, cp.IndexPageSize)
 		return true, nil
-
+	case COMMAND_LISTNORMALFILE:
+		ListNormalFiles(cp.MonitorFolderPath)
+	default:
+		DisplayHelp()
+		Utils.Logger.Println("Command not found " + cp.CurrentCommand)
+		return false, errors.New("Main.Command not found " + cp.CurrentCommand)
 	}
 	return true, nil
+}
+
+func DisplayHelp() {
+	helpContent, errHelp := GetQuickHelpInformation()
+	if errHelp != nil {
+		Utils.Logger.Println("Main.DisplayHelp: Cannot get quick help information")
+	} else {
+		fmt.Println("")
+		fmt.Println("QuickHelp")
+		fmt.Println("==========")
+		fmt.Println(helpContent)
+	}
+}
+
+func GetQuickHelpInformation() (string, error) {
+	quickHelpFilePath, errPath := Configuration.GetQuickHelpPath()
+	if errPath != nil {
+		Utils.Logger.Println("GetQuickHelp: " + errPath.Error())
+		return "", errPath
+	}
+	bHelpContent, errRead := ioutil.ReadFile(quickHelpFilePath)
+
+	if errRead != nil {
+		Utils.Logger.Println("GetQuickHelp: " + errRead.Error())
+		return "", errRead
+	}
+	var sHelpContent = string(bHelpContent)
+	return sHelpContent, nil
+}
+
+func ListNormalFiles(monitorFolderPath string) {
+	if monitorFolderPath == "" {
+		Utils.Logger.Println("RunMonitor: Monitor Folder Path is empty")
+		return
+	}
+
+	if Utils.PathIsExist(monitorFolderPath) == false {
+		Utils.Logger.Println("RunMonitor: Monitor Folder doesn't exist")
+		return
+	}
+
+	monitorDefinitionFilePath, _ := Try2FindSmFile(monitorFolderPath)
+	if monitorDefinitionFilePath == "" {
+		Utils.Logger.Println("RunMonitor: No monitor definition file found in folder  " + monitorFolderPath)
+		return
+	}
+
+	//Load Monitor
+	var smp = Monitor.NewSiteMonitor()
+
+	_, errLoad := smp.LoadFromFile(monitorDefinitionFilePath)
+
+	if errLoad != nil {
+		Utils.Logger.Println("RunMonitor: Cannot Load Monitor from file " + monitorDefinitionFilePath)
+		return
+	}
+
+	Monitor.IPSC_ListFile(smp.SiteFolderPath, smp.SiteTitle)
+
 }
 
 func NewMonitor(monitorFolderPath, siteFolderPath, siteTitle string) (bool, error) {
@@ -125,6 +190,7 @@ func NewMonitor(monitorFolderPath, siteFolderPath, siteTitle string) (bool, erro
 	var markdownMonitorFolder = filepath.Join(monitorFolderPath, "Markdown")
 	var htmlMonitorFolder = filepath.Join(monitorFolderPath, "Html")
 	var linkMonitorFolder = filepath.Join(monitorFolderPath, "Link")
+	var fileMonitorFolder = filepath.Join(monitorFolderPath, "Files")
 
 	if bExportSite && errExportSite == nil {
 		for _, markdownPage := range markdownPages {
@@ -149,6 +215,10 @@ func NewMonitor(monitorFolderPath, siteFolderPath, siteTitle string) (bool, erro
 			smp.AddLink(linkPage)
 		}
 
+		if Utils.PathIsExist(fileMonitorFolder) {
+			smp.NormalFiles = smp.GetNormalFileList()
+		}
+
 	}
 
 	if Utils.PathIsExist(markdownMonitorFolder) == false {
@@ -161,6 +231,10 @@ func NewMonitor(monitorFolderPath, siteFolderPath, siteTitle string) (bool, erro
 
 	if Utils.PathIsExist(linkMonitorFolder) == false {
 		Utils.MakeFolder(linkMonitorFolder)
+	}
+
+	if Utils.PathIsExist(fileMonitorFolder) == false {
+		Utils.MakeFolder(fileMonitorFolder)
 	}
 
 	var linkMonitorFile = filepath.Join(linkMonitorFolder, "Link.txt")
@@ -279,9 +353,12 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 	var linkFilePath = filepath.Join(monitorFolderPath, "Link", "Link.txt")
 
-	var mdChanged, htmChanged, linkChanged bool
+	var normalFileFolderPath = filepath.Join(monitorFolderPath, "Files")
+
+	var mdChanged, htmChanged, linkChanged, fileChanged bool
 
 	if Utils.PathIsExist(markdownFolderPath) {
+		fmt.Println("Checking Markdown")
 		var addMd, updateMd, deleteMd int
 		addMd = 0
 		updateMd = 0
@@ -448,6 +525,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 	}
 
 	if Utils.PathIsExist(htmlFolderPath) {
+		fmt.Println("Checking Html")
 		files, _ := ioutil.ReadDir(htmlFolderPath)
 		var addHtm, updateHtm, deleteHtm int
 		addHtm = 0
@@ -611,6 +689,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 	}
 
 	if Utils.PathIsExist(linkFilePath) {
+		fmt.Println("Checking Link")
 		linkFileInfo, errFileInfo := os.Stat(linkFilePath)
 		if errFileInfo == nil {
 			var addLink, updateLink, deleteLink int
@@ -725,25 +804,165 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 					for _, deletedLink := range deletedLinks {
 						smp.DeleteLink(deletedLink.Url)
 					}
-					linkChanged = true
-					fmt.Println("Markdown Files")
-					fmt.Println("    Add:    " + strconv.Itoa(addLink))
-					fmt.Println("    Update: " + strconv.Itoa(updateLink))
-					fmt.Println("    Delete: " + strconv.Itoa(deleteLink))
+					if addLink != 0 || updateLink != 0 || deleteLink != 0 {
+						linkChanged = true
+						fmt.Println("Link Files")
+						fmt.Println("    Add:    " + strconv.Itoa(addLink))
+						fmt.Println("    Update: " + strconv.Itoa(updateLink))
+						fmt.Println("    Delete: " + strconv.Itoa(deleteLink))
+					} else {
+						linkChanged = false
+						fmt.Println("Links not changed, pass")
+					}
 
 				}
 			} else {
 				linkChanged = false
-				fmt.Println("Html Links not changed, pass")
+				fmt.Println("Links not changed, pass")
+			}
+		}
+	}
+
+	if Utils.PathIsExist(normalFileFolderPath) {
+		fmt.Println("Checking Normal File")
+		var addNormalFile, updateNormalFile, deleteNormalFile int
+		addNormalFile = 0
+		updateNormalFile = 0
+		deleteNormalFile = 0
+
+		var srcFileList = smp.GetNormalFileList()
+		var outputFileList = smp.NormalFiles
+
+		if len(srcFileList) != 0 {
+			//Add or Update File
+			var handledFolder string
+			handledFolder = ""
+			for _, srcFile := range srcFileList {
+
+				var iFind = Monitor.GetNormalFile(outputFileList, srcFile.FilePath)
+				var srcFullPath = filepath.Join(smp.MonitorFolderPath, srcFile.FilePath)
+				if Utils.PathIsDir(srcFullPath) && (strings.HasPrefix(srcFullPath, handledFolder) == false || handledFolder == "") {
+					handledFolder = srcFullPath
+				}
+				if iFind == -1 {
+					//New File,add
+					if Utils.PathIsDir(srcFullPath) && (strings.HasPrefix(srcFullPath, handledFolder) == false || handledFolder == "") {
+						_, errAdd := Monitor.IPSC_AddFile(smp.SiteFolderPath, smp.SiteTitle, srcFullPath)
+
+						if errAdd != nil {
+							var errMsg = "RunMonitor: Cannot Add Normal file " + srcFullPath
+							Utils.Logger.Println(errMsg)
+							Utils.Logger.Println(errAdd.Error())
+							return false, errors.New(errMsg)
+						}
+
+						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+					} else if Utils.PathIsDir(srcFullPath) && strings.HasPrefix(srcFullPath, handledFolder) {
+						_, errAdd := Monitor.IPSC_AddFile(smp.SiteFolderPath, smp.SiteTitle, handledFolder)
+
+						if errAdd != nil {
+							var errMsg = "RunMonitor: Cannot Add Normal file " + srcFullPath
+							Utils.Logger.Println(errMsg)
+							Utils.Logger.Println(errAdd.Error())
+							return false, errors.New(errMsg)
+						}
+
+						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+					} else if Utils.PathIsFile(srcFullPath) && strings.HasPrefix(srcFullPath, handledFolder) {
+						addNormalFile = addNormalFile + 1
+						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+						continue
+					} else if Utils.PathIsFile(srcFullPath) {
+						_, errAdd := Monitor.IPSC_AddFile(smp.SiteFolderPath, smp.SiteTitle, srcFullPath)
+
+						if errAdd != nil {
+							var errMsg = "RunMonitor: Cannot Add Normal file " + srcFullPath
+							Utils.Logger.Println(errMsg)
+							Utils.Logger.Println(errAdd.Error())
+							return false, errors.New(errMsg)
+						}
+
+						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+						addNormalFile = addNormalFile + 1
+					}
+				} else {
+					//Update
+					var dstFile = outputFileList[iFind]
+
+					if srcFile.LastModified > dstFile.LastModified {
+						var srcFullPath = filepath.Join(smp.MonitorFolderPath, srcFile.FilePath)
+						if Utils.PathIsDir(srcFullPath) {
+							continue
+						}
+						_, errDelete := Monitor.IPSC_DeleteFile(smp.SiteFolderPath, smp.SiteTitle, srcFile.FilePath)
+
+						if errDelete != nil {
+							var errMsg = "RunMonitor: Cannot Delete Normal file (Update File) " + srcFile.FilePath
+							Utils.Logger.Println(errMsg)
+							Utils.Logger.Println(errDelete.Error())
+							return false, errors.New(errMsg)
+						}
+
+						_, errAdd := Monitor.IPSC_AddFile(smp.SiteFolderPath, smp.SiteTitle, srcFullPath)
+
+						if errAdd != nil {
+							var errMsg = "RunMonitor: Cannot Add Normal file " + srcFullPath
+							Utils.Logger.Println(errMsg)
+							Utils.Logger.Println(errAdd.Error())
+							return false, errors.New(errMsg)
+						}
+
+						smp.NormalFiles = Monitor.UpdateNormalFile(smp.NormalFiles, srcFile)
+
+						updateNormalFile = updateNormalFile + 1
+					}
+				}
+			}
+
+			//Delete
+
+			var deletedNormalFiles []Monitor.NormalFile
+			for _, dstFile := range outputFileList {
+				var iFind = Monitor.GetNormalFile(srcFileList, dstFile.FilePath)
+				if iFind == -1 {
+
+					deletedNormalFiles = append(deletedNormalFiles, dstFile)
+
+					_, errDelete := Monitor.IPSC_DeleteFile(smp.SiteFolderPath, smp.SiteTitle, "."+dstFile.FilePath)
+
+					if errDelete != nil {
+						var errMsg = "RunMonitor: Cannot Delete Normal file (Update File) " + dstFile.FilePath
+						Utils.Logger.Println(errMsg)
+						Utils.Logger.Println(errDelete.Error())
+						return false, errors.New(errMsg)
+					}
+
+					deleteNormalFile = deleteNormalFile + 1
+				}
+			}
+
+			for _, deletedNormalFile := range deletedNormalFiles {
+				smp.NormalFiles = Monitor.DeleteNormalFile(smp.NormalFiles, deletedNormalFile)
+			}
+
+			if addNormalFile == 0 && updateNormalFile == 0 && deleteNormalFile == 0 {
+				fileChanged = false
+				fmt.Println("Normal Files not changed, pass")
+			} else {
+				htmChanged = true
+				fmt.Println("Normal Files")
+				fmt.Println("    Add:    " + strconv.Itoa(addNormalFile))
+				fmt.Println("    Update: " + strconv.Itoa(updateNormalFile))
+				fmt.Println("    Delete: " + strconv.Itoa(deleteNormalFile))
 			}
 		}
 	}
 
 	fmt.Println("Check and Update monitor folder success")
 
-	if mdChanged == true || htmChanged == true || linkChanged == true {
+	if mdChanged == true || htmChanged == true || linkChanged == true || fileChanged == true {
 
-		fmt.Println("Now will compile the site again")
+		fmt.Println("Now will compile the site")
 
 		//Compile
 		_, errCompile := Monitor.IPSC_Compile(smp.SiteFolderPath, smp.SiteTitle, indexPageSize)
@@ -778,11 +997,11 @@ func Run() {
 			Utils.Logger.Println(errRet.Error())
 		}
 	}
-	fmt.Println("Done")
+	fmt.Println("")
+	fmt.Println("Note:If ipsd failed, read ipsd.log")
 }
 
 func main() {
-	fmt.Println("Read ReadMe before using this tool")
 	Run()
 	//test()
 }

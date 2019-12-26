@@ -68,10 +68,12 @@ func (cpp *CommandParser) ParseCommand() bool {
 				ret = false
 			}
 		*/
+	case COMMAND_LISTNORMALFILE:
+		if cpp.MonitorFolderPath == "" {
+			fmt.Println("Monitor Folder is empty, will not create site")
+			ret = false
+		}
 	default:
-		fmt.Println("Doesn't have this command " + cpp.CurrentCommand)
-		fmt.Println("For More Information, read the ReadMe")
-
 	}
 	return ret
 }

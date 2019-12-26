@@ -1,0 +1,1 @@
+move /Y ..\ipsd ..\..\ipsd_release\Arm6\

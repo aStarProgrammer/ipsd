@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"ipsd/Utils"
 	"os"
+	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -18,6 +20,7 @@ type SiteMonitor struct {
 	MarkdownFiles []MarkdownPage
 	HtmlFiles     []HtmlPage
 	LinkFiles     []LinkPage
+	NormalFiles   []NormalFile
 }
 
 func NewSiteMonitor() *SiteMonitor {
@@ -407,4 +410,34 @@ func (smp *SiteMonitor) DeleteLink(linkUrl string) (bool, error) {
 
 	smp.LinkFiles = append(smp.LinkFiles[:index], smp.LinkFiles[index+1:]...)
 	return true, nil
+}
+
+func (smp *SiteMonitor) GetMonitorFilesFolderPath() string {
+	return filepath.Join(smp.MonitorFolderPath, "Files")
+}
+
+func (smp *SiteMonitor) GetNormalFileList() NormalFileSlice {
+	var monitorFilesFolder = smp.GetMonitorFilesFolderPath()
+
+	var filesList NormalFileSlice
+
+	filepath.Walk(monitorFilesFolder, func(path string, info os.FileInfo, err error) error {
+		var fileName = info.Name()
+		var relativePath = path[len(smp.MonitorFolderPath):]
+		var lastModified = info.ModTime().Format("2006-01-02 15:04:05")
+
+		if fileName != "Files" {
+			var normalFile NormalFile
+			normalFile.FileName = fileName
+			normalFile.FilePath = relativePath
+			normalFile.LastModified = lastModified
+
+			filesList = append(filesList, normalFile)
+		}
+
+		return nil
+	})
+
+	sort.Sort(filesList)
+	return filesList
 }

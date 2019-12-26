@@ -1,0 +1,1 @@
+move /Y ..\ipsd.exe ..\..\ipsd_release\Windows\Windows_X86\

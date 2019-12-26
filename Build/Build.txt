@@ -1,0 +1,30 @@
+1.Install go
+2.Install git
+	git 
+	Download and install
+		https://git-scm.com/download
+	OR
+		sudo apt-get install git	
+3.Install mingw(Windows)
+4.Install Liteide (https://github.com/visualfc/liteide)
+	*Windows/Linux/MacOSX just download and install
+	*Raspbian
+		Download source (qt4 linux 64)code and Compile as follows:
+		1) sudo apt-get update
+		2) sudo apt-get upgrade
+		3) sudo apt-get install git
+		4) git clone https://github.com/visualfc/liteide.git
+		5) sudo apt-get install qt4-dev-tools libqt4-dev libqtcore4 libqtgui4 libqtwebkit-dev g++
+		6) cd liteide/build
+		7) ./update_pkg.sh
+		8) export QTDIR=/usr
+		9) ./build_linux.sh
+		10) cd ~/liteide/liteidex
+		11) ./linux_deploy.sh
+		12) cd ~/liteide/liteidex/liteide/bin 
+		13) ./liteide
+
+5.Open IPSD with liteide 
+6.Select the platform you needed, modify current environment according to step 1 and 3
+	Modify GOROOT and PATH
+7.Compile->Build
