@@ -186,15 +186,27 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
 
 1. Build IPSD working environment as "Build Working Environment"
 2. Download IPSP and unzip it
-3. Use IPSD to create a ipsc site project, create ipsc source folder and ipsc output folder
-4. Create a empty original source folder for IPSD
+3. Use IPSC to create a ipsc site project, create ipsc source folder and ipsc output folder
+  ```bash
+    ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC" -OutputFolder "F:\SiteOutputFolder"
+  ```
+4. Create a empty original source folder for IPSD. Now there are three folders
+  * Orignial Folder F:\WatchdogSpace which contains the orginal files for the site
+  * Site Source Folder F:\TestSite which contains files for the ipsc site
+  * Site Output Folder F:\SiteOutputFolder which contains generated files of site
 5. Connect Original source folder with IPSC by ipsd
+```bash
+  ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
+```
 6. Use IPSP to monitor IPSC output folder
+```bash
+  ipsp -SiteFolder "F:\TestSite" -MonitorInterval 600
+```
 
 ## Build a Tool-Chain to create and publish site to normal web server (IIS/Apache)
 
 1. Build IPSD working environment as "Build Working Environment"
-2. Use IPSD to create a ipsc site project, create ipsc source folder and ipsc output folder
+2. Use IPSC to create a ipsc site project, create ipsc source folder and ipsc output folder
 3. Add ipsc output folder to web server
 4. Create a empty original source folder for IPSD
 5. Connect Original source folder with IPSC by ipsd
