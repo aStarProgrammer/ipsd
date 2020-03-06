@@ -154,7 +154,7 @@ IndexPageSize (for index page and more page of site, for more information, read 
 
 *  Normal 	index(more) page will contain 20 items
 
-* Small  	index(more) page will contain 10 items
+*  Small  	index(more) page will contain 10 items
 
 *  VerySmall	index(more) page will contain 5  items
 
@@ -201,36 +201,38 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
   * Site Output Folder F:\SiteOutputFolder which contains generated files of site
 5. Connect Original source folder with IPSC by ipsd
 ```bash
-  ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
+ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
 ```
 Note: if the command not works as you expected, check the ipsd.log in the folder that ipsc locates.
 6. Use IPSP to monitor IPSC output folder
 ```bash
-  ipsp -SiteFolder "F:\TestSite" -MonitorInterval 600
+ipsp -SiteFolder "F:\TestSite" -MonitorInterval 600
 ```
+7. Now you can add and publish page as **Use the Tool-Chain**
 
 ## Build a Tool-Chain to create and publish site to normal web server (IIS/Apache)
 
 1. Build IPSD working environment as "Build Working Environment"
 2. Create ipsc source folder(F:\TestSite) and ipsc output folder(F:\SiteOutputFolder), then use IPSC to create a ipsc site project
-  ```bash
-    ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC" -OutputFolder "F:\SiteOutputFolder"
-  ```
-  You can also don't use OutputFolder argument, then there will be an output folder under site folder created(F:\TestSite\output)
-  ```bash
-    ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
-  ```
-  Note: if the command not works as you expected, check the ipsc.log in the folder that ipsc locates.
+```bash
+ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC" -OutputFolder "F:\SiteOutputFolder"
+```
+You can also don't use OutputFolder argument, then there will be an output folder under site folder created(F:\TestSite\output)
+```bash
+ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
+```
+Note: if the command not works as you expected, check the ipsc.log in the folder that ipsc locates.
 3. Add ipsc output folder to web server
 4. Create a empty original source folder for IPSD
- * Orignial Folder F:\WatchdogSpace which contains the orginal files for the site
+  * Orignial Folder F:\WatchdogSpace which contains the orginal files for the site
   * Site Source Folder F:\TestSite which contains files for the ipsc site
   * Site Output Folder F:\SiteOutputFolder which contains generated files of site
 5. Connect Original source folder with IPSC by ipsd
 ```bash
-  ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
+ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
 ```
 Note: if the command not works as you expected, check the ipsd.log in the folder that ipsc locates.
+6. Now you can add and publish page as **Use the Tool-Chain**
 
 
 ## Use the Tool-**Chain**
@@ -295,6 +297,9 @@ Note: if the command not works as you expected, check the ipsd.log in the folder
 ### 2. Run Monitor
 
 Use ipsd runmonitor  to update the changes in original source folder to ipsc then call ipsc to compile the site again. ipsc output folder will changed, and as the ipsp is monitoring the output folder of ipsc,  it will detect the change of ipsc output folder and publish the site in ipsc output folder to ipfs agian.
+```bash
+ipsd -Command RunMonitor -MonitorFolder "F:\WatchdogSpace" -IndexPageSize "VerySmall"
+```
 
 ## Raise A Issue
 
