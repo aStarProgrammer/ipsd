@@ -186,9 +186,13 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
 
 1. Build IPSD working environment as "Build Working Environment"
 2. Download IPSP and unzip it
-3. Use IPSC to create a ipsc site project, create ipsc source folder and ipsc output folder
+3. Create ipsc source folder(F:\TestSite) and ipsc output folder(F:\SiteOutputFolder), then use IPSC to create a ipsc site project
   ```bash
     ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC" -OutputFolder "F:\SiteOutputFolder"
+  ```
+  You can also don't use OutputFolder argument, then there will be an output folder under site folder created(F:\TestSite\output)
+  ```bash
+    ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
   ```
 4. Create a empty original source folder for IPSD. Now there are three folders
   * Orignial Folder F:\WatchdogSpace which contains the orginal files for the site
@@ -206,9 +210,13 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
 ## Build a Tool-Chain to create and publish site to normal web server (IIS/Apache)
 
 1. Build IPSD working environment as "Build Working Environment"
-2. Use IPSC to create a ipsc site project, create ipsc source folder and ipsc output folder
+2. Create ipsc source folder(F:\TestSite) and ipsc output folder(F:\SiteOutputFolder), then use IPSC to create a ipsc site project
   ```bash
     ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC" -OutputFolder "F:\SiteOutputFolder"
+  ```
+  You can also don't use OutputFolder argument, then there will be an output folder under site folder created(F:\TestSite\output)
+  ```bash
+    ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
   ```
 3. Add ipsc output folder to web server
 4. Create a empty original source folder for IPSD
