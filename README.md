@@ -80,6 +80,8 @@ IPSD must work with IPSC , you need to do as following to create a environment t
 
 5. Copy all the files to IPSD folder
 
+6. Add this path to PATH environment variable
+
 ## How it works
 
 There are a original source folder which contains source files, it looks like
