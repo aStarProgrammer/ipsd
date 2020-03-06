@@ -290,11 +290,11 @@ Note: if the command not works as you expected, check the ipsd.log in the folder
   ["https://www.google.com|b3177dc7b530dc8d02b6e2a53d0e7e3c|Test Link Page|true",
 "https://www.microsoft.com||microsoft|true"]
 
- The https://www.google.com is the link already exist.
+   The https://www.google.com is the link already exist.
  
- The https://www.microsoft.com is the link added.
+   The https://www.microsoft.com is the link added.
  
- The GUID is empty. ipsd will update it after the link has been added to ipsc site.
+   The GUID is empty. ipsd will update it after the link has been added to ipsc site.
 
 2. Copy a image with name microsoft (for example,microsoft.png or microsoft.jpg) to the Link folder.
 
