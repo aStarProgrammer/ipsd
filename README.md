@@ -194,6 +194,7 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
   ```bash
     ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
   ```
+  Note: if the command not works as you expected, check the ipsc.log in the folder that ipsc locates.
 4. Create a empty original source folder for IPSD. Now there are three folders
   * Orignial Folder F:\WatchdogSpace which contains the orginal files for the site
   * Site Source Folder F:\TestSite which contains files for the ipsc site
@@ -202,6 +203,7 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
 ```bash
   ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
 ```
+Note: if the command not works as you expected, check the ipsd.log in the folder that ipsc locates.
 6. Use IPSP to monitor IPSC output folder
 ```bash
   ipsp -SiteFolder "F:\TestSite" -MonitorInterval 600
@@ -218,6 +220,7 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
   ```bash
     ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
   ```
+  Note: if the command not works as you expected, check the ipsc.log in the folder that ipsc locates.
 3. Add ipsc output folder to web server
 4. Create a empty original source folder for IPSD
  * Orignial Folder F:\WatchdogSpace which contains the orginal files for the site
@@ -227,6 +230,8 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
 ```bash
   ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
 ```
+Note: if the command not works as you expected, check the ipsd.log in the folder that ipsc locates.
+
 
 ## Use the Tool-**Chain**
 
