@@ -290,16 +290,21 @@ Note: if the command not works as you expected, check the ipsd.log in the folder
 
 * #### Normal File
 
-  1. Copy a file or folder to Originial Source Folder->Files
+  Copy a file or folder to Originial Source Folder->Files
 
 
 
 ### 2. Run Monitor
 
-Use ipsd runmonitor  to update the changes in original source folder to ipsc then call ipsc to compile the site again. ipsc output folder will changed, and as the ipsp is monitoring the output folder of ipsc,  it will detect the change of ipsc output folder and publish the site in ipsc output folder to ipfs agian.
+Run ipsd RunMonitor command, this command will push changes from orignial folder to ipsc source folder,then call ipsc to compile the site again, generate new site in ipsc output folder.
+
 ```bash
 ipsd -Command RunMonitor -MonitorFolder "F:\WatchdogSpace" -IndexPageSize "VerySmall"
 ```
+
+If you already monitored the ipsc folder with ipsp, ipsp will publish the new site to ipfs.
+
+If you decided to publish the generated site to web server, now you can check the site with browser.
 
 ## Raise A Issue
 
