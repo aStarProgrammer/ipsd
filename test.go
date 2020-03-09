@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"ipsd/Monitor"
+	"ipsd/Utils"
 	"os"
 	"os/exec"
 	"strconv"
@@ -267,7 +268,7 @@ func testReadHtmlFileProperties() {
 }
 
 func testReadLinksFile() {
-	var filePath = "F:\\WatchdogSpace\\Link\\Link.txt"
+	var filePath = "F:\\WatchdogSpace\\Link\\Link.liks"
 
 	links, errProperties := Monitor.ReadLinksFromFile(filePath)
 
@@ -282,6 +283,42 @@ func testReadLinksFile() {
 		fmt.Println(link.ID)
 		fmt.Println(link.Title)
 		fmt.Println("--------")
+	}
+
+}
+
+func testSaveLinksFile() {
+	var filePath = "F:\\ppSite\\src\\Link1.txt"
+
+	var links []Monitor.LinkPage
+
+	var link1 Monitor.LinkPage
+	link1.Title = "google"
+	link1.Url = "https://www.google.com"
+	link1.IsTop = false
+	link1.ID = Utils.GUID()
+
+	var link2 Monitor.LinkPage
+	link2.Title = "microsoft"
+	link2.Url = "https://www.microsoft.com"
+	link2.ID = Utils.GUID()
+	link2.IsTop = false
+
+	links = append(links, link1)
+	links = append(links, link2)
+
+	json, err2Json := Monitor.Links2Json(links)
+
+	if err2Json != nil {
+		fmt.Println(err2Json.Error())
+	}
+
+	fmt.Println(json)
+
+	_, errSave := Monitor.SaveLinksToFile(filePath, links)
+
+	if errSave != nil {
+		fmt.Println(errSave.Error())
 	}
 
 }
@@ -362,6 +399,17 @@ func testDeleteFile() {
 
 }
 
+func testDeleteFile2() {
+	var filePath string
+	filePath = "F:\\ppSite\\src\\Link\\g1.jpeg"
+
+	err := os.Remove(filePath)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+
 func test() {
-	testRunMonitor()
+	testDeleteFile2()
 }

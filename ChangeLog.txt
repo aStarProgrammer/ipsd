@@ -6,3 +6,34 @@
 * Add New Feature, now you can add normal files to Files folder, and all files in this folder will be copied to 
   Output/Pages/Files folder, and you can add list files by ipsd -ListFiles and use the Relative Url in your 
   hyperlink when you writing markdown file.
+
+0.2.0.1 2020/3/8
+* Fix bug, Cannot add link to the link.txt
+  1.Add link to the Link.txt as follows
+   orignial
+	[]
+   Add first link
+	["https://www.google.com||google|true"]
+	https://www.google.com 	is the Url
+	|| 						empty is the id for this item in ipsc site project,now it is empty, and ipsd will update it after it added this link to the ipsc site
+	google 					is the title that will display in the index Pages
+	true 					the link will on top of the page, false will not on top
+   2. Create a title image named google, such as google.png google.jpg and put it with the same folder of Link.txt
+   3. Run ipsd  RunMonitor, this item will be updated to 
+	["https://www.google.com|f0454d7349d4a2aa222a5ede0cc2e129|google|true"]
+   
+
+	Now you have already has an item in the Link.txt, if you want to add another one
+	1. Add link
+	["https://www.google.com|f0454d7349d4a2aa222a5ede0cc2e129|google|true","https://www.microsoft.com||microsoft|false"]
+	2. Add an title image in to the folder , named microsoft.jpg
+	3. Run ipsd RunMonitor, link will be added to the ipsc site and compile the site
+	4. The item will be updated to 
+	["https://www.google.com|f0454d7349d4a2aa222a5ede0cc2e129|google|true","https://www.microsoft.com|662731e8effd72ac2386c2e6a015bbee|microsoft|true"]
+	
+if you want to update the item, you can update the name and true or false. if you want to update the url, delete it and add again
+
+If you want to delete it, just delete it from Link.txt, then run ipsd RunMonitor
+
+* Change Link.txt to Link.liks
+* Fix bug that cannot add html or markdown

@@ -3,8 +3,8 @@ package Configuration
 import (
 	"errors"
 	"io/ioutil"
-	"ipsc/Page"
-	"ipsc/Utils"
+	"ipsd/Page"
+	"ipsd/Utils"
 	"os"
 	"os/exec"
 	"path/filepath"

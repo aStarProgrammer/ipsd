@@ -294,10 +294,12 @@ func IPSC_AddHtml(siteFolder, siteTitle, pagePath, pageTitle, pageAuthor, titleI
 
 	if ipscOutput != "" {
 		if strings.HasPrefix(ipscOutput, "Add Success,") {
-			//fmt.Println(ipscOutput)
-			ipscOutput = ipscOutput[:strings.Index(ipscOutput, "Done")]
+			if strings.HasSuffix(ipscOutput, "Done") {
+				ipscOutput = ipscOutput[:strings.Index(ipscOutput, "Done")]
+			}
 			ipscOutput = ipscOutput[strings.LastIndex(ipscOutput, " ")+1:]
 			ipscOutput = strings.TrimSpace(ipscOutput)
+			return ipscOutput, true, nil
 		} else {
 			return "", false, errors.New(ipscOutput)
 		}
@@ -350,15 +352,25 @@ func IPSC_AddLink(siteFolder, siteTitle, linkUrl, pageTitle, pageAuthor, titleIm
 	if ipscOutput != "" {
 		if strings.HasPrefix(ipscOutput, "Add Success,") {
 			//fmt.Println(ipscOutput)
-			ipscOutput = ipscOutput[:strings.Index(ipscOutput, "Done")]
+			if strings.HasSuffix(ipscOutput, "Done") {
+				ipscOutput = ipscOutput[:strings.Index(ipscOutput, "Done")]
+			}
 			ipscOutput = ipscOutput[strings.LastIndex(ipscOutput, " ")+1:]
 			ipscOutput = strings.TrimSpace(ipscOutput)
+
+			if Utils.IsGuid(ipscOutput) {
+				return ipscOutput, true, nil
+			} else {
+				return "", false, errors.New(ipscOutput)
+			}
+
 		} else {
+			Utils.Logger.Println(ipscOutput)
 			return "", false, errors.New(ipscOutput)
 		}
 	}
 
-	return "", false, errors.New(ipscOutput)
+	return ipscOutput, false, nil
 }
 
 func IPSC_UpdateMarkdownOrHtml(siteFolder, siteTitle, pageID, pagePath, pageTitle, pageAuthor, titleImage string, isTop bool) (bool, error) {
@@ -455,6 +467,8 @@ func IPSC_UpdateLink(siteFolder, siteTitle, pageID, linkUrl, pageTitle, pageAuth
 	if ipscOutput != "" {
 		if strings.HasPrefix(ipscOutput, "Update Success") {
 			return true, nil
+		} else {
+			Utils.Logger.Println(ipscOutput)
 		}
 	}
 

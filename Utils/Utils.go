@@ -44,6 +44,28 @@ func GUID() string {
 	return GetMd5String(base64.URLEncoding.EncodeToString(b))
 }
 
+func IsGuid(id string) bool {
+	if id == "" {
+		return false
+	}
+	if len(id) != 32 {
+		return false
+	}
+
+	dat := []byte(id)
+	isBase64 := true
+	for _, v := range dat {
+		if v >= 48 && v <= 57 || v >= 65 && v <= 70 || v >= 97 && v <= 102 {
+
+		} else {
+			isBase64 = false
+			break
+		}
+	}
+
+	return isBase64
+}
+
 func CurrentTime() string {
 	t := time.Now()
 	str := t.Format("2006-01-02 15:04:05")
@@ -267,6 +289,10 @@ func MoveFile(src, dst string) (int64, error) {
 }
 
 func DeleteFile(filePath string) bool {
+	if PathIsExist(filePath) == false {
+		return false
+	}
+
 	errRemove := os.Remove(filePath)
 
 	if errRemove != nil {
@@ -317,6 +343,33 @@ func GetImageWithSameName(filePath string) (string, error) {
 	}
 
 	return "", errors.New("GetImageWithSameName: not find image with same name of " + filePath)
+}
+
+func GetImageWithSameName2(folderPath, fileName string) (string, error) {
+	if PathIsExist(folderPath) == false {
+		return "", errors.New("GetImageWithSameName: folderPath not exist " + folderPath)
+	}
+
+	files, errReadDir := ioutil.ReadDir(folderPath)
+
+	if errReadDir != nil {
+		return "", errReadDir
+	}
+
+	var fPath string
+	for _, file := range files {
+		var fName = file.Name()
+		fPath = filepath.Join(folderPath, fName)
+		var fExt = filepath.Ext(fPath)
+		if PathIsImage(fPath) {
+			fShortName := strings.Replace(fName, fExt, "", -1)
+			if fileName == fShortName {
+				return fPath, nil
+			}
+		}
+	}
+
+	return "", errors.New("GetImageWithSameName: not find image with same name of " + fileName + " in " + folderPath)
 }
 
 func GetImageWithSameTitle(fileFolder, fileTitle string) (string, error) {

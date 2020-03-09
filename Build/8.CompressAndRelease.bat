@@ -1,5 +1,5 @@
 cd ..\..\ipsd_release
-set ipsdVersion=0.2.0.0
+set ipsdVersion=0.2.0.1
 mkdir %ipsdVersion%
 
 cd Windows

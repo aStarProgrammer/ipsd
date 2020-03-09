@@ -237,7 +237,7 @@ func NewMonitor(monitorFolderPath, siteFolderPath, siteTitle string) (bool, erro
 		Utils.MakeFolder(fileMonitorFolder)
 	}
 
-	var linkMonitorFile = filepath.Join(linkMonitorFolder, "Link.txt")
+	var linkMonitorFile = filepath.Join(linkMonitorFolder, "Link.liks")
 	if Utils.PathIsExist(linkMonitorFile) == false {
 		Utils.CreateFile(linkMonitorFile)
 	}
@@ -351,7 +351,9 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 	var markdownFolderPath = filepath.Join(monitorFolderPath, "Markdown")
 	var htmlFolderPath = filepath.Join(monitorFolderPath, "Html")
 
-	var linkFilePath = filepath.Join(monitorFolderPath, "Link", "Link.txt")
+	var linkFilePath = filepath.Join(monitorFolderPath, "Link", "Link.liks")
+
+	var linkFolderPath = filepath.Join(monitorFolderPath, "Link")
 
 	var normalFileFolderPath = filepath.Join(monitorFolderPath, "Files")
 
@@ -704,11 +706,45 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 					var errMsg = "RunMonitor: Cannot read Links from " + linkFilePath
 					Utils.Logger.Println(errMsg)
 				} else {
+
+					//Delete
+					var deletedLinks []Monitor.LinkPage
+					for _, sLink := range smp.LinkFiles {
+						if Monitor.FindLink(sLink, fLinks) == false {
+							fmt.Println(sLink.Url + " has been deleted, will delete it from ispc")
+
+							_, errDelete := Monitor.IPSC_DeletePage(smp.SiteFolderPath, smp.SiteTitle, sLink.ID)
+
+							if errDelete != nil {
+								var errMsg = "RunMonitor: Cannot Delete Link " + sLink.Url
+								Utils.Logger.Println(errMsg)
+							}
+
+							imagePath, errImagePath := Utils.GetImageWithSameName2(linkFolderPath, sLink.Title)
+
+							if errImagePath == nil {
+								bDeleteImage := Utils.DeleteFile(imagePath)
+								if bDeleteImage == false {
+									var errMsg = "RunMonitor: Cannot Delete Image " + imagePath
+									Utils.Logger.Println(errMsg)
+								}
+							}
+
+							deleteLink = deleteLink + 1
+							deletedLinks = append(deletedLinks, sLink)
+
+						}
+					}
+
+					for _, deletedLink := range deletedLinks {
+						smp.DeleteLink(deletedLink.Url)
+					}
+
 					for _, fLink := range fLinks {
 						index := smp.GetLink(fLink.Url)
 						if index == -1 {
 							fmt.Println(fLink.Url + " is a new Link, will add it to ipsc")
-							addLink = addLink + 1
+
 							//Add
 							var linkFolderPath = filepath.Join(monitorFolderPath, "Link")
 							titleImagePath, errImageName := Utils.GetImageWithSameTitle(linkFolderPath, fLink.Title)
@@ -745,14 +781,16 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 							newLink.Title = fLink.Title
 							newLink.IsTop = fLink.IsTop
 
+							smp.DeleteLink(fLink.Url)
 							smp.AddLink(newLink)
+							addLink = addLink + 1
 
 						} else {
 							//Update
 
 							sLink := smp.LinkFiles[index]
 							fmt.Println(sLink.Url + " has been modified, will update it with ipsc")
-							updateLink = updateLink + 1
+
 							if sLink.ID == fLink.ID && (sLink.Url != fLink.Url || sLink.Title != fLink.Title || sLink.IsTop != fLink.IsTop) {
 								var linkFolderPath = filepath.Join(monitorFolderPath, "Link")
 								titleImagePath, errImageName := Utils.GetImageWithSameTitle(linkFolderPath, fLink.Title)
@@ -787,29 +825,19 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 								smp.DeleteLink(sLink.Url)
 								smp.AddLink(fLink)
+								updateLink = updateLink + 1
 							}
 						}
 					}
 
-					//Delete
-					var deletedLinks []Monitor.LinkPage
-					for _, sLink := range smp.LinkFiles {
-						if Monitor.FindLink(sLink, fLinks) == false {
-							fmt.Println(sLink.Url + " has been deleted, will delete it from ispc")
-							deleteLink = deleteLink + 1
-							deletedLinks = append(deletedLinks, sLink)
-						}
-					}
-
-					for _, deletedLink := range deletedLinks {
-						smp.DeleteLink(deletedLink.Url)
-					}
 					if addLink != 0 || updateLink != 0 || deleteLink != 0 {
 						linkChanged = true
 						fmt.Println("Link Files")
 						fmt.Println("    Add:    " + strconv.Itoa(addLink))
 						fmt.Println("    Update: " + strconv.Itoa(updateLink))
 						fmt.Println("    Delete: " + strconv.Itoa(deleteLink))
+						//Save Link File
+						Monitor.SaveLinksToFile(linkFilePath, smp.LinkFiles)
 					} else {
 						linkChanged = false
 						fmt.Println("Links not changed, pass")

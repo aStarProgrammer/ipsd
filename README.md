@@ -187,12 +187,33 @@ ipsd -Command ListNormalFile -MonitorFolder "F:\WatchdogSpace"
 ## Build a Tool-Chain to create and publish site to IPFS
 
 1. Build IPSD working environment as "Build Working Environment"
+
 2. Download IPSP and unzip it
-3. Create ipsc source folder(F:\TestSite) and ipsc output folder(F:\SiteOutputFolder), then use IPSC to create a ipsc site project
+
+3. Install pandoc
+
+   https://pandoc.org
+
+   Install it as following KB :
+
+    https://pandoc.org/installing.html 
+
+   Open command (cmd for Windows, shell for Linux/macOS) , run pandoc -v ,it should return the version information
+
+4. Install a markdown editor , Typora or Visual Studio Code (need to install markdown extension) recommended. 
+
+   https://typeora.io
+
+   https://code.visualstudio.com 
+
+5. Create ipsc source folder(F:\TestSite) and ipsc output folder(F:\SiteOutputFolder), then use IPSC to create a ipsc site project
   ```bash
     ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC" -OutputFolder "F:\SiteOutputFolder"
   ```
-  You can also don't use OutputFolder argument, then there will be an output folder under site folder created(F:\TestSite\output)
+ Note: run this command with administrator permission (windows:Run as Administrator, Linux/Mac sudo), because ipsc need to call makesoftlink function when it create output folder, and this function need administrator permission.
+
+ You can also don't use OutputFolder argument, then there will be an output folder under site folder created(F:\TestSite\output)
+
   ```bash
     ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
   ```
@@ -215,7 +236,24 @@ ipsp -SiteFolder "F:\TestSite" -MonitorInterval 600
 ## Build a Tool-Chain to create and publish site to normal web server (IIS/Apache)
 
 1. Build IPSD working environment as "Build Working Environment"
-2. Create ipsc source folder(F:\TestSite) and ipsc output folder(F:\SiteOutputFolder), then use IPSC to create a ipsc site project
+
+2. Install pandoc
+
+   https://pandoc.org
+
+   Install it as following KB :
+
+    https://pandoc.org/installing.html 
+
+   Open command (cmd for Windows, shell for Linux/macOS) , run pandoc -v ,it should return the version information
+
+3. Install a markdown editor , Typora or Visual Studio Code (need to install markdown extension) recommended. 
+
+   https://typeora.io
+
+   https://code.visualstudio.com 
+
+4. Create ipsc source folder(F:\TestSite) and ipsc output folder(F:\SiteOutputFolder), then use IPSC to create a ipsc site project
 ```bash
 ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC" -OutputFolder "F:\SiteOutputFolder"
 ```
@@ -224,17 +262,21 @@ You can also don't use OutputFolder argument, then there will be an output folde
 ipsc -Command "NewSite" -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -SiteAuthor "Chao(sdxianchao@gmail.com)" -SiteDescription "Test Site for IPSC"
 ```
 Note: if the command not works as you expected, check the ipsc.log in the folder that ipsc locates.
-3. Add ipsc output folder to web server
-4. Create a empty original source folder for IPSD
+5. Add ipsc output folder to web server
+
+6. Create a empty original source folder for IPSD
+
   * Orignial Folder F:\WatchdogSpace which contains the orginal files for the site
   * Site Source Folder F:\TestSite which contains files for the ipsc site
   * Site Output Folder F:\SiteOutputFolder which contains generated files of site
-5. Connect Original source folder with IPSC by ipsd
+7. Connect Original source folder with IPSC by ipsd
+
 ```bash
 ipsd -Command NewMonitor -SiteFolder "F:\TestSite" -SiteTitle "Test Site" -MonitorFolder "F:\WatchdogSpace"
 ```
 Note: if the command not works as you expected, check the ipsd.log in the folder that ipsc locates.
-6. Now you can add and publish page as **Use the Tool-Chain**
+
+8. Now you can add and publish page as **Use the Tool-Chain**
 
 
 ## Use the Tool-**Chain**
@@ -288,17 +330,34 @@ Note: if the command not works as you expected, check the ipsd.log in the folder
 
 * #### Link
 
-1. Open the link.txt in orignial/Link folder, add the new link as follows
-  ["https://www.google.com|b3177dc7b530dc8d02b6e2a53d0e7e3c|Test Link Page|true",
-"https://www.microsoft.com||microsoft|true"]
+  1.Add link to the Link.txt as follows
+   orignial
+	[]
+   Add first link
+	["https://www.google.com||google|true"]
+	
+	**https://www.google.com** 	is the Url
+	**||** 		empty is the id for this item in ipsc site project,now it is empty, and ipsd will update it after it added this link to the ipsc site
+	**google** 	is the title that will display in the index Pages
+  **true** 		the link will on top of the page, **false** will not on top
+  
+	 2. Create a title image named google, such as google.png google.jpg and put it with the same folder of Link.txt
+   3. Run ipsd  RunMonitor, this item will be updated to 
+["https://www.google.com|f0454d7349d4a2aa222a5ede0cc2e129|google|true"]
+	
+	
+	Now you have already has an item in the Link.txt, if you want to add another one
+	1. Add link
+	["https://www.google.com|f0454d7349d4a2aa222a5ede0cc2e129|google|true","https://www.microsoft.com||microsoft|false"]
+	2. Add an title image in to the folder , named microsoft.jpg
+	3. Run ipsd RunMonitor, link will be added to the ipsc site and compile the site
+	4. The item will be updated to 
+	["https://www.google.com|f0454d7349d4a2aa222a5ede0cc2e129|google|true","https://www.microsoft.com|662731e8effd72ac2386c2e6a015bbee|microsoft|true"]
+	
 
-   The https://www.google.com is the link already exist.
- 
-   The https://www.microsoft.com is the link added.
- 
-   The GUID is empty. ipsd will update it after the link has been added to ipsc site.
+if you want to update the item, you can update the name and true or false. if you want to update the url, delete it and add again
 
-2. Copy a image with name microsoft (for example,microsoft.png or microsoft.jpg) to the Link folder.
+If you want to delete it, just delete it from Link.txt, then run ipsd RunMonitor
 
 
 * #### Normal File
