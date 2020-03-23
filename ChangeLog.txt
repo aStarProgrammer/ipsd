@@ -56,4 +56,6 @@ If you want to delete it, just delete it from Link.txt, then run ipsd RunMonitor
 0.2.0.4 2020/3/22
 *Add Feature
 	Now when you call ipsd to update site, it will ouptut the compile process as follows
-		Compiling  : F:\ppSite\output\index.html
+		Add/Generate  : F:\ppSite\output\index.html
+                Update:  F:\ppSite\output\H1.html
+                Delete: F:\ppSite\output\P1.html
