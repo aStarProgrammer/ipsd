@@ -429,6 +429,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 					newMdPage.LastModified = Utils.CurrentTime()
 
 					smp.AddMarkdown(newMdPage)
+					smp.SaveToFile(monitorDefinitionFilePath)
 
 				} else {
 					//Update
@@ -477,6 +478,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 						//Update sourceMarkdown
 						sourceMarkdown.LastModified = fLastModified
 						smp.UpdateMarkdown(sourceMarkdown)
+						smp.SaveToFile(monitorDefinitionFilePath)
 					}
 				}
 			}
@@ -512,6 +514,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 		for _, deletedMd := range deletedMds {
 			smp.DeleteMarkdown(deletedMd.FilePath)
+			smp.SaveToFile(monitorDefinitionFilePath)
 		}
 
 		if addMd == 0 && updateMd == 0 && deleteMd == 0 {
@@ -594,7 +597,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 					newHtmPage.LastModified = Utils.CurrentTime()
 
 					smp.AddHtml(newHtmPage)
-
+					smp.SaveToFile(monitorDefinitionFilePath)
 				} else {
 					//Update
 					var sourceHtml = smp.HtmlFiles[index]
@@ -641,6 +644,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 						sourceHtml.LastModified = fLastModified
 						smp.UpdateHtml(sourceHtml)
+						smp.SaveToFile(monitorDefinitionFilePath)
 					}
 				}
 			}
@@ -675,6 +679,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 		for _, deletedHtml := range deletedHtmls {
 			smp.DeleteHtml(deletedHtml.FilePath)
+			smp.SaveToFile(monitorDefinitionFilePath)
 		}
 
 		if addHtm == 0 && updateHtm == 0 && deleteHtm == 0 {
@@ -738,6 +743,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 					for _, deletedLink := range deletedLinks {
 						smp.DeleteLink(deletedLink.Url)
+						smp.SaveToFile(monitorDefinitionFilePath)
 					}
 
 					for _, fLink := range fLinks {
@@ -783,6 +789,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 							smp.DeleteLink(fLink.Url)
 							smp.AddLink(newLink)
+							smp.SaveToFile(monitorDefinitionFilePath)
 							addLink = addLink + 1
 
 						} else {
@@ -825,6 +832,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 								smp.DeleteLink(sLink.Url)
 								smp.AddLink(fLink)
+								smp.SaveToFile(monitorDefinitionFilePath)
 								updateLink = updateLink + 1
 							}
 						}
@@ -885,6 +893,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 						}
 
 						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+						smp.SaveToFile(monitorDefinitionFilePath)
 					} else if Utils.PathIsDir(srcFullPath) && strings.HasPrefix(srcFullPath, handledFolder) {
 						_, errAdd := Monitor.IPSC_AddFile(smp.SiteFolderPath, smp.SiteTitle, handledFolder)
 
@@ -896,9 +905,11 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 						}
 
 						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+						smp.SaveToFile(monitorDefinitionFilePath)
 					} else if Utils.PathIsFile(srcFullPath) && strings.HasPrefix(srcFullPath, handledFolder) {
 						addNormalFile = addNormalFile + 1
 						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+						smp.SaveToFile(monitorDefinitionFilePath)
 						continue
 					} else if Utils.PathIsFile(srcFullPath) {
 						_, errAdd := Monitor.IPSC_AddFile(smp.SiteFolderPath, smp.SiteTitle, srcFullPath)
@@ -911,6 +922,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 						}
 
 						smp.NormalFiles = Monitor.AddNormalFile(smp.NormalFiles, srcFile)
+						smp.SaveToFile(monitorDefinitionFilePath)
 						addNormalFile = addNormalFile + 1
 					}
 				} else {
@@ -941,7 +953,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 						}
 
 						smp.NormalFiles = Monitor.UpdateNormalFile(smp.NormalFiles, srcFile)
-
+						smp.SaveToFile(monitorDefinitionFilePath)
 						updateNormalFile = updateNormalFile + 1
 					}
 				}
@@ -971,6 +983,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 
 			for _, deletedNormalFile := range deletedNormalFiles {
 				smp.NormalFiles = Monitor.DeleteNormalFile(smp.NormalFiles, deletedNormalFile)
+				smp.SaveToFile(monitorDefinitionFilePath)
 			}
 
 			if addNormalFile == 0 && updateNormalFile == 0 && deleteNormalFile == 0 {
@@ -991,7 +1004,7 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 	if mdChanged == true || htmChanged == true || linkChanged == true || fileChanged == true {
 
 		fmt.Println("Now will compile the site")
-
+		watch := MonitorCompile(smp.SiteFolderPath)
 		//Compile
 		_, errCompile := Monitor.IPSC_Compile(smp.SiteFolderPath, smp.SiteTitle, indexPageSize)
 
@@ -1000,16 +1013,13 @@ func RunMonitor(monitorFolderPath, indexPageSize string) (bool, error) {
 			Utils.Logger.Println(errMsg)
 			return false, errCompile
 		}
-
+		StopMonitor(watch, smp.SiteFolderPath)
 		fmt.Println("Compile Success")
 	} else {
 		fmt.Println("No file changed since previous monitor, pass ")
 	}
 	//Save Monitor
-	bSave, errSave := smp.SaveToFile(monitorDefinitionFilePath)
-	if errSave != nil {
-		return bSave, errors.New("Monitor: Cannot Save Monitor to file " + monitorDefinitionFilePath)
-	}
+	smp.SaveToFile(monitorDefinitionFilePath)
 
 	fmt.Println("***************")
 	return true, nil

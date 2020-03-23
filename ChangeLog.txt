@@ -37,3 +37,23 @@ If you want to delete it, just delete it from Link.txt, then run ipsd RunMonitor
 
 * Change Link.txt to Link.liks
 * Fix bug that cannot add html or markdown
+
+0.2.0.2 2020/3/20
+*Bug Fix
+	Fix bug in Build bat
+	Add script 0 to clean release folder of each Build
+*Design Change
+	Add commands to build bats, now they can create a new release combined with ipsd_vsc/ipsc_vsc
+	which can be downloaded and used directly. pandoc included
+
+0.2.0.3 2020/3/21
+*Bug Fix	
+	When you add several source file(Md or html), if one of them cannot read properties or get size of title image,
+	generation process will stop but the source files already added to ipsc will not be saved to sm.json
+	When you run RunMonitor again, the previous added file will be added again, but it will fail as it is already added to
+	ipsc site. 
+	
+0.2.0.4 2020/3/22
+*Add Feature
+	Now when you call ipsd to update site, it will ouptut the compile process as follows
+		Compiling  : F:\ppSite\output\index.html
